@@ -11,7 +11,7 @@ def check_cuda():
         import torch
         cuda_available = torch.cuda.is_available()
         device_count = torch.cuda.device_count()
-        
+
         print(f"CUDA Available: {cuda_available}")
         if cuda_available:
             print(f"CUDA Devices: {device_count}")
@@ -20,7 +20,7 @@ def check_cuda():
                 print(f"  Device {i}: {device_name}")
         else:
             print("CUDA not available - will use CPU")
-            
+
         return cuda_available
     except ImportError:
         print("PyTorch not installed - CUDA check skipped")
@@ -40,7 +40,7 @@ def check_realsense():
     """Check RealSense SDK"""
     try:
         import pyrealsense2 as rs
-        print("RealSense SDK: Available")
+        print(f"RealSense SDK version: {rs.__version__}")
         return True
     except ImportError:
         print("ERROR: RealSense SDK not found")
@@ -48,21 +48,21 @@ def check_realsense():
 
 if __name__ == "__main__":
     print("=== Device Check ===")
-    
+
     # Check critical components
-    opencv_ok = check_opencv()
-    realsense_ok = check_realsense()
+    OPENCV_OK = check_opencv()
+    REALSENSE_OK = check_realsense()
     cuda_ok = check_cuda()
-    
+
     print("\n=== Summary ===")
-    print(f"OpenCV: {'✓' if opencv_ok else '✗'}")
-    print(f"RealSense: {'✓' if realsense_ok else '✗'}")
+    print(f"OpenCV: {'✓' if OPENCV_OK else '✗'}")
+    print(f"RealSense: {'✓' if REALSENSE_OK else '✗'}")
     print(f"CUDA: {'✓' if cuda_ok else '⚠ (CPU mode)'}")
-    
+
     # Only fail if critical components are missing
-    if not opencv_ok or not realsense_ok:
+    if not OPENCV_OK or not REALSENSE_OK:
         print("\nERROR: Critical components missing!")
         sys.exit(1)
-    
+
     print("\nDevice check completed successfully!")
     sys.exit(0)

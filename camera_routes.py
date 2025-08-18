@@ -1,3 +1,7 @@
+"""
+Exposes camera route APIs that can be called from a client
+"""
+
 from datetime import datetime
 from flask import Blueprint, Response, jsonify
 from remote_camera import RemoteCameraManager
@@ -13,10 +17,9 @@ def start_camera():
     """Start camera endpoint"""
     try:
         success, message = camera_manager.start_camera()
-        if success:
-            return jsonify({'status': 'success', 'message': message}), 200
-        else:
+        if not success:
             return jsonify({'status': 'error', 'message': message}), 400
+        return jsonify({'status': 'success', 'message': message}), 200
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
@@ -25,10 +28,9 @@ def stop_camera():
     """Stop camera endpoint"""
     try:
         success, message = camera_manager.stop_camera()
-        if success:
-            return jsonify({'status': 'success', 'message': message}), 200
-        else:
+        if not success:
             return jsonify({'status': 'error', 'message': message}), 400
+        return jsonify({'status': 'success', 'message': message}), 200
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
@@ -51,10 +53,9 @@ def start_recording():
     """Start YOLO recording endpoint"""
     try:
         success, message = camera_manager.start_recording()
-        if success:
-            return jsonify({'status': 'success', 'message': message}), 200
-        else:
+        if not success:
             return jsonify({'status': 'error', 'message': message}), 400
+        return jsonify({'status': 'success', 'message': message}), 200
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
@@ -63,10 +64,9 @@ def stop_recording():
     """Stop YOLO recording endpoint"""
     try:
         success, message = camera_manager.stop_recording()
-        if success:
-            return jsonify({'status': 'success', 'message': message}), 200
-        else:
+        if not success:
             return jsonify({'status': 'error', 'message': message}), 400
+        return jsonify({'status': 'success', 'message': message}), 200
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
@@ -75,12 +75,12 @@ def video_feed():
     """Video feed endpoint with optional annotations"""
     try:
         print("Video feed endpoint called")
-        
+
         if not camera_manager.is_camera_active():
             print("Camera not initialized")
             return jsonify({'error': 'Camera not started'}), 400
-        
-        print(f"Starting video stream...")
+
+        print("Starting video stream...")
         return Response(camera_manager.generate_frames(),
                        mimetype='multipart/x-mixed-replace; boundary=frame')
     except Exception as e:
@@ -98,7 +98,7 @@ def health_check():
 
 # Cleanup on app shutdown
 @remote_bp.teardown_appcontext
-def cleanup(error):
+def cleanup():
     """Cleanup resources"""
     try:
         camera_manager.stop_recording()
@@ -111,22 +111,21 @@ def shutdown_server():
     """Shutdown server and cleanup resources"""
     try:
         # Get the shutdown function from werkzeug
-        from werkzeug.serving import make_server
         import os
         import signal
-        
+
         # Send shutdown signal
         def shutdown():
             os.kill(os.getpid(), signal.SIGINT)
-        
+
         # Schedule shutdown after response is sent
         import threading
         threading.Timer(1.0, shutdown).start()
-        
+
         return jsonify({
-            'status': 'success', 
+            'status': 'success',
             'message': 'Server shutting down...'
         }), 200
-        
+
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
