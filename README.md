@@ -1,6 +1,6 @@
 # Underwater Object Detection — Remote Server
 
-This repository serves as the companion backend for [UWOD-RC](https://github.com/poran-dip/uwod-rc), the main control interface for real-time object detection.
+This repository serves as the companion backend for [ODStream](https://github.com/poran-dip/odstream), the main control interface for real-time object detection.
 
 This backend is designed to be deployed on a Single Board Computer (SBC) such as the Jetson Nano. It handles **Intel RealSense camera streaming** and optionally performs **YOLOv5-based object detection**, making the results accessible to the main controller.
 
@@ -19,8 +19,8 @@ This backend is designed to be deployed on a Single Board Computer (SBC) such as
 To set up the server on a Jetson Nano (or other compatible SBC), follow these steps:
 
 ```bash
-git clone https://github.com/poran-dip/uwod-remote.git
-cd uwod-remote
+git clone https://github.com/poran-dip/odstream-remote.git
+cd odstream-remote
 python3 -m venv venv
 source venv/bin/activate
 chmod +x setup.sh
@@ -44,9 +44,9 @@ Ensure your Intel RealSense camera is connected via USB.
 
 ---
 
-## Integration with UWOD-RC
+## Integration with ODStream
 
-Once the server is running, obtain its network URL (e.g., `http://jetson-nano.local:5000`) and enter it in the UI of the UWOD-RC project.
+Once the server is running, obtain its network URL (e.g., `http://jetson-nano.local:5000`) and enter it in the UI of the ODStream project.
 
 **Workflow:**
 1. Start camera for live streaming
@@ -62,4 +62,4 @@ Once the server is running, obtain its network URL (e.g., `http://jetson-nano.lo
 - The default YOLO model is `yolov5n.pt`
 - Live streaming is always available when camera is active
 - YOLO detection only runs when recording is enabled
-- Fully compatible with the Flask + React frontend provided by [uwod-rc](https://github.com/poran-dip/uwod-rc)
+- Fully compatible with the Flask + React frontend provided by [ODStream](https://github.com/poran-dip/odstream)

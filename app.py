@@ -1,5 +1,5 @@
 """
-The main app module for UWOD-Remote
+The main app module for ODStream-Remote
 """
 
 from flask import Flask
